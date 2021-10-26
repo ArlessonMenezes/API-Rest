@@ -6,7 +6,7 @@ const gamesController = require('./Controllers/gameController');
 const connection = require('./Database/database');
 
 connection.authenticate()
-    .then(() => console.log('Conexão realizado com o banco de dados!'))
+    .then(() => console.log('Conexão realizada com o banco de dados!'))
     .catch(err => console.log(err));
 
 app.use(express.urlencoded({extended: true}))
