@@ -3,6 +3,7 @@ const app = express();
 const port = 3000;
 const cors  = require('cors');
 
+const userController = require("./Controllers/userController");
 const gamesController = require('./Controllers/gameController');
 const connection = require('./Database/database');
 
@@ -11,11 +12,10 @@ connection.authenticate()
     .catch(err => console.log(err));
 
 app.use(cors());
-
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({extended: false}))
 app.use(express.json());
 
-
+app.use('/', userController);
 app.use('/', gamesController);
 
 

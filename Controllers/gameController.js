@@ -1,9 +1,10 @@
 const express = require('express');
+const auth = require('../Middleware/auth');
 const router = express.Router();
 const Game = require('../Model/Game');
 
 //Criar dados
-router.post('/game', (req, res) => {
+router.post('/game', auth.authenticate, (req, res) => {
     let { title, price, year } = req.body;
     if(title != undefined && price != undefined && year != undefined){
         Game.create({
@@ -19,17 +20,17 @@ router.post('/game', (req, res) => {
 })
 
 //Listar todos os dados
-router.get('/games', (req, res) => {
-    res.statusCode = 200;
+router.get('/games', auth.authenticate, (req, res) => {
+    res.status(200);
     Game.findAll({
         order:[
             ['id', 'DESC']
         ]   
-    }).then(result => res.json(result))
+    }).then(result => res.json({user: req.loggedUser, games: result}))
 })
 
 //Listar dados filtrados através do id
-router.get('/game/:id', (req, res) => {
+router.get('/game/:id', auth.authenticate, (req, res) => {
     
     if(isNaN(req.params.id)) {
         res.sendStatus(400);
@@ -43,7 +44,7 @@ router.get('/game/:id', (req, res) => {
             }
         }).then(result => {
             if(result != undefined){
-                res.statusCode = 200;
+                res.status(200);
                 res.json(result);     
             } else {
                 res.sendStatus(404);
@@ -53,7 +54,7 @@ router.get('/game/:id', (req, res) => {
 })
 
 //Deletando dados
-router.delete('/game/:id', (req, res) => {
+router.delete('/game/:id', auth.authenticate, (req, res) => {
     if(isNaN(req.params.id)) {
         res.sendStatus(400);
     } else {
